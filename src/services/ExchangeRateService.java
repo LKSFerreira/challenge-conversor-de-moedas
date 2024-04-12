@@ -22,7 +22,7 @@ public class ExchangeRateService {
 
     public String getExchangeRate(String baseCurrency) throws IOException, InterruptedException {
         // Constrói a URL da API com a chave da API e a moeda base
-        String url = String.format("https://api.exchangerate-api.com/v4/latest/%s?apiKey=%s", baseCurrency, apiKey);
+        String url = String.format("https://v6.exchangerate-api.com/v6/%s/latest/%s", apiKey, baseCurrency);
 
         // Cria a requisição HTTP
         HttpRequest request = HttpRequest.newBuilder()
@@ -38,8 +38,7 @@ public class ExchangeRateService {
             // Usa Gson para extrair o objeto "conversion_rates" do corpo da resposta
             Gson gson = new Gson();
             JsonObject jsonResponse = gson.fromJson(response.body(), JsonObject.class);
-            System.out.println(jsonResponse);
-            JsonObject conversionRates = jsonResponse.getAsJsonObject("rates");
+            JsonObject conversionRates = jsonResponse.getAsJsonObject("conversion_rates");
             // Retorna a String JSON do objeto "conversion_rates"
             return conversionRates.toString();
         } else {
