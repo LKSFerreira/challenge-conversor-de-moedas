@@ -80,19 +80,26 @@ public class ExchangeRateService {
     * }
     * </pre>
     */
-    public static ExchangeRatesRecord getExchangeRateRecord(String baseCurrency)
-            throws IOException, InterruptedException, ApiKeyNotFoundException {
-        String apiKey = Config.getApiKey();
-        ExchangeRateService exchangeRateService = new ExchangeRateService(apiKey);
+    public static ExchangeRatesRecord getExchangeRateRecord(String baseCurrency) {
 
-        String exchangeRateJson = exchangeRateService.getExchangeRate(baseCurrency);
+        try {
+            String apiKey = Config.getApiKey();
+            ExchangeRateService exchangeRateService = new ExchangeRateService(apiKey);
 
-        Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
-                .setPrettyPrinting()
-                .create();
+            String exchangeRateJson = exchangeRateService.getExchangeRate(baseCurrency);
 
-        return gson.fromJson(exchangeRateJson, ExchangeRatesRecord.class);
+            Gson gson = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
+                    .setPrettyPrinting()
+                    .create();
+
+            return gson.fromJson(exchangeRateJson, ExchangeRatesRecord.class);
+
+        } catch (ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundException("Erro ao obter a API Key: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Erro ao obter a taxa de câmbio: " + e.getMessage());
+        }
     }
 
 }

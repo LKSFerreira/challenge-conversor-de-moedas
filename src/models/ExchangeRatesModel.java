@@ -54,13 +54,13 @@ public class ExchangeRatesModel {
     @Override
     public String toString() {
         return String.format(
-                "Peso argentino:        %,.4f%n" +
+                        "Peso argentino:        %,.4f%n" +
                         "Boliviano boliviano:   %,.4f%n" +
-                        "Real brasileiro:       %,.4f%n" +
+                        /*"Real brasileiro:       %,.4f%n" +*/
                         "Peso chileno:          %,.4f%n" +
                         "Peso colombiano:       %,.4f%n" +
                         "Dólar americano:       %,.4f%n",
-                pesoArgentino, bolivianoBoliviano, realBrasileiro, pesoChileno, pesoColombiano, dolarAmericano);
+                pesoArgentino, bolivianoBoliviano, /*realBrasileiro,*/ pesoChileno, pesoColombiano, dolarAmericano);
     }
 
 }
