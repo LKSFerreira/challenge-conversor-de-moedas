@@ -1,32 +1,20 @@
-import services.ExchangeRateService;
-
 import java.io.IOException;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import configs.Config;
 import exceptions.ApiKeyNotFoundException;
-import models.ExchangeRatesRecord;
+import models.ExchangeRatesModel;
+import services.ExchangeRateService;
 
 public class App {
     public static void main(String[] args) {
         try {
-            String apiKey = Config.getApiKey();
-            ExchangeRateService exchangeRateService = new ExchangeRateService(apiKey);
 
-            // Exemplo de uso do serviço para obter a taxa de câmbio de USD para EUR
-            String exchangeRateJson = exchangeRateService.getExchangeRate("BRL");
+            // Obtém a taxa de câmbio de USD para ARS, BOB, BRL, CLP, COP
+            ExchangeRatesModel exchangeRatesModel = new ExchangeRatesModel(
+                    ExchangeRateService.getExchangeRateRecord("USD"));
+            System.out.println(exchangeRatesModel);
 
-            Gson gson = new GsonBuilder()
-                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
-                    .setPrettyPrinting()
-                    .create();
-
-            ExchangeRatesRecord exchangeRatesRecord = gson.fromJson(exchangeRateJson, ExchangeRatesRecord.class);
-
-            System.out.println(exchangeRatesRecord);
+            double value = 2;
+            exchangeRatesModel.getExchangeRates(value);
 
         } catch (ApiKeyNotFoundException e) {
             System.err.println("Erro ao obter a API Key: " + e.getMessage());
