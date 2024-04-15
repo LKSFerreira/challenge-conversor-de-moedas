@@ -25,13 +25,6 @@ public class Dashboard {
                 return new ExchangeRatesModel(
                         ExchangeRateService.getExchangeRateRecord(opcoesParaMoedas.get(opcao)));
             } else if ("7".equals(opcao)) {
-                // System.out.println("Digite o código da moeda de origem (Ex: 'BRL'):");
-                // var moedaOrigem = scanner.next();
-
-                // var value = getValueToConvert(scanner);
-
-                // System.out.println("Digite o código da moeda de destino (Ex: 'USD'):");
-                // var moedaDestino = scanner.next();
                 return null;
             } else {
                 System.out.println("Opção inválida.\n");
@@ -65,13 +58,26 @@ public class Dashboard {
     }
 
     public static void exchangeOneToOne(Scanner scanner) {
-        // System.out.print("Digite o código da moeda de origem (Ex: 'BRL'): ");
-        // var moedaOrigem = scanner.next();
 
-        // var value = getValueToConvert(scanner);
+        try {
 
-        // System.out.print("Digite o código da moeda de destino (Ex: 'USD'): ");
-        // var moedaDestino = scanner.next();
+            System.out.print("Digite o código da moeda de origem (Ex: 'BRL'): ");
+            var moedaOrigem = scanner.next();
+
+            var valueToConvert = getValueToConvert(scanner);
+
+            System.out.print("Digite o código da moeda de destino (Ex: 'USD'): ");
+            var moedaDestino = scanner.next();
+
+            double exchangeRate = ExchangeRateService.getSpecificExchangeRate(moedaOrigem, moedaDestino);
+
+            var exchangeRateModel = new ExchangeRatesModel(moedaOrigem, moedaDestino);
+
+            exchangeRateModel.getExchangeRateOneToOne(valueToConvert, exchangeRate);
+
+        } catch (Exception e) {
+            System.out.println("Erro ao converter moedas: " + e.getMessage());
+        }
     }
 
 }

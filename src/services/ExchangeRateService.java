@@ -6,11 +6,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.util.Map;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import configs.Config;
 import exceptions.ApiKeyNotFoundException;
@@ -94,6 +96,45 @@ public class ExchangeRateService {
                     .create();
 
             return gson.fromJson(exchangeRateJson, ExchangeRatesRecord.class);
+
+        } catch (ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundException("Erro ao obter a API Key: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Erro ao obter a taxa de câmbio: " + e.getMessage());
+        }
+    }
+
+    // Atividade extra: Implementar um método para obter a taxa de câmbio de uma moeda específica
+
+    private Map<String, Double> getAllExchangeRates(String baseCurrency) throws IOException, InterruptedException {
+
+        try {
+            String exchangeRateJson = getExchangeRate(baseCurrency);
+
+            Gson gson = new GsonBuilder()
+                    .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
+                    .setPrettyPrinting()
+                    .create();
+
+            return gson.fromJson(exchangeRateJson, new TypeToken<Map<String, Double>>() {
+            }.getType());
+
+        } catch (ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundException("Erro ao obter a API Key: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Erro ao obter a taxa de câmbio: " + e.getMessage());
+        }
+    }
+
+    public static double getSpecificExchangeRate(String baseCurrency, String targetCurrency) {
+        try {
+            String apiKey = Config.getApiKey();
+            ExchangeRateService exchangeRateService = new ExchangeRateService(apiKey);
+
+            Map<String, Double> exchangeRates = exchangeRateService.getAllExchangeRates(baseCurrency);
+
+            // Retorna a taxa de câmbio específica para a moeda desejada
+            return exchangeRates.get(targetCurrency.toUpperCase());
 
         } catch (ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundException("Erro ao obter a API Key: " + e.getMessage());

@@ -11,6 +11,9 @@ public class ExchangeRatesModel {
         private double pesoColombiano;
         private double dolarAmericano;
 
+        private String baseCurrency;
+        private String targetCurrency;
+
         public ExchangeRatesModel(ExchangeRatesRecord exchangeRatesRecord) {
                 this.pesoArgentino = exchangeRatesRecord.ars();
                 this.bolivianoBoliviano = exchangeRatesRecord.bob();
@@ -20,8 +23,23 @@ public class ExchangeRatesModel {
                 this.dolarAmericano = exchangeRatesRecord.usd();
         }
 
-        public void getExchangeRates(double value) {
-                validarValor(value);
+        public ExchangeRatesModel(String baseCurrency, String targetCurrency) {
+                this.baseCurrency = baseCurrency;
+                this.targetCurrency = targetCurrency;
+        }
+
+        public void getExchangeRateOneToOne(Double valueToConvert, Double exchangeRate) {
+                validarValor(valueToConvert);
+                validarTaxaDeCambio(exchangeRate);
+
+                double valorConvertido = calcularConversao(valueToConvert, exchangeRate);
+
+                System.out.printf("\nTotal de %s em %s ----> %.4f\n\n", baseCurrency.toUpperCase(),
+                                targetCurrency.toUpperCase(), valorConvertido);
+        }
+
+        public void getExchangeRates(double valueToConvert) {
+                validarValor(valueToConvert);
 
                 Map<String, Double> moedas = new LinkedHashMap<>(); // LinkedHashMap mantém a ordem
                 moedas.put("Real brasileiro", realBrasileiro);
@@ -33,11 +51,12 @@ public class ExchangeRatesModel {
 
                 int maiorNomeMoeda = moedas.keySet().stream().mapToInt(String::length).max().orElse(0);
                 System.out.println();
+
                 for (Map.Entry<String, Double> entry : moedas.entrySet()) {
                         String nomeMoeda = entry.getKey();
                         double taxaCambio = entry.getValue();
                         validarTaxaDeCambio(taxaCambio);
-                        double valorConvertido = calcularConversao(value, taxaCambio);
+                        double valorConvertido = calcularConversao(valueToConvert, taxaCambio);
 
                         // Calcula o número de traços a serem preenchidos
                         int numTracos = maiorNomeMoeda - nomeMoeda.length();
@@ -46,6 +65,7 @@ public class ExchangeRatesModel {
                         // Formata e imprime a linha
                         System.out.printf("%s %s> %,10.4f%n", nomeMoeda, tracos, valorConvertido);
                 }
+
                 System.out.println();
         }
 
@@ -66,7 +86,7 @@ public class ExchangeRatesModel {
         }
 
         private double calcularConversao(double valor, double taxaDeCambio) {
-                return valor < taxaDeCambio ? valor * taxaDeCambio : valor / taxaDeCambio;
+                return  valor * taxaDeCambio;
         }
 
         @Override
