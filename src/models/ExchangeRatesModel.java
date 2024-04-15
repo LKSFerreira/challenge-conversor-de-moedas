@@ -1,66 +1,83 @@
 package models;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class ExchangeRatesModel {
-    private double pesoArgentino;
-    private double bolivianoBoliviano;
-    private double realBrasileiro;
-    private double pesoChileno;
-    private double pesoColombiano;
-    private double dolarAmericano;
+        private double pesoArgentino;
+        private double bolivianoBoliviano;
+        private double realBrasileiro;
+        private double pesoChileno;
+        private double pesoColombiano;
+        private double dolarAmericano;
 
-    public ExchangeRatesModel(ExchangeRatesRecord exchangeRatesRecord) {
-        this.pesoArgentino = exchangeRatesRecord.ars();
-        this.bolivianoBoliviano = exchangeRatesRecord.bob();
-        this.realBrasileiro = exchangeRatesRecord.brl();
-        this.pesoChileno = exchangeRatesRecord.clp();
-        this.pesoColombiano = exchangeRatesRecord.cop();
-        this.dolarAmericano = exchangeRatesRecord.usd();
-    }
-
-    public void getExchangeRates(double value) {
-
-        if (value <= 0) {
-            throw new IllegalArgumentException("O valor não pode ser menor ou igual a zero.");
+        public ExchangeRatesModel(ExchangeRatesRecord exchangeRatesRecord) {
+                this.pesoArgentino = exchangeRatesRecord.ars();
+                this.bolivianoBoliviano = exchangeRatesRecord.bob();
+                this.realBrasileiro = exchangeRatesRecord.brl();
+                this.pesoChileno = exchangeRatesRecord.clp();
+                this.pesoColombiano = exchangeRatesRecord.cop();
+                this.dolarAmericano = exchangeRatesRecord.usd();
         }
 
-        if (pesoArgentino <= 0 || bolivianoBoliviano <= 0 || realBrasileiro <= 0 || pesoChileno <= 0
-                || pesoColombiano <= 0 || dolarAmericano <= 0) {
-            throw new IllegalArgumentException("As taxas de câmbio não podem ser menores ou iguais a zero.");
+        public void getExchangeRates(double value) {
+                validarValor(value);
+
+                Map<String, Double> moedas = new LinkedHashMap<>(); // LinkedHashMap mantém a ordem
+                moedas.put("Real brasileiro", realBrasileiro);
+                moedas.put("Dólar americano", dolarAmericano);
+                moedas.put("Peso argentino", pesoArgentino);
+                moedas.put("Boliviano boliviano", bolivianoBoliviano);
+                moedas.put("Peso chileno", pesoChileno);
+                moedas.put("Peso colombiano", pesoColombiano);
+
+                int maiorNomeMoeda = moedas.keySet().stream().mapToInt(String::length).max().orElse(0);
+                for (Map.Entry<String, Double> entry : moedas.entrySet()) {
+                        String nomeMoeda = entry.getKey();
+                        double taxaCambio = entry.getValue();
+                        validarTaxaDeCambio(taxaCambio);
+                        double valorConvertido = calcularConversao(value, taxaCambio);
+
+                        // Calcula o número de traços a serem preenchidos
+                        int numTracos = maiorNomeMoeda - nomeMoeda.length();
+                        String tracos = "-".repeat(numTracos + 1);
+
+                        // Formata e imprime a linha
+                        System.out.printf("%s %s> %,10.4f%n", nomeMoeda, tracos, valorConvertido);
+                }
+                System.out.println();
         }
 
-        if (Double.isInfinite(value) || Double.isNaN(value)) {
-            throw new IllegalArgumentException("O valor não pode ser infinito ou NaN.");
+        private void validarValor(double value) {
+                if (value <= 0) {
+                        throw new IllegalArgumentException("O valor não pode ser menor ou igual a zero.");
+                }
+                if (Double.isInfinite(value) || Double.isNaN(value)) {
+                        throw new IllegalArgumentException("O valor não pode ser infinito ou NaN.");
+                }
         }
 
-        System.out.printf("Valor em Peso argentino:        %,.4f%n",
-                value < pesoArgentino ? value * pesoArgentino : value / pesoArgentino);
+        private void validarTaxaDeCambio(double taxa) {
+                if (taxa <= 0) {
+                        throw new IllegalArgumentException(
+                                        "As taxas de câmbio não podem ser menores ou iguais a zero.");
+                }
+        }
 
-        System.out.printf("Valor em Boliviano boliviano:   %,.4f%n",
-                value < bolivianoBoliviano ? value * bolivianoBoliviano : value / bolivianoBoliviano);
+        private double calcularConversao(double valor, double taxaDeCambio) {
+                return valor < taxaDeCambio ? valor * taxaDeCambio : valor / taxaDeCambio;
+        }
 
-        System.out.printf("Valor em Real brasileiro:       %,.4f%n",
-                value < realBrasileiro ? value * realBrasileiro : value / realBrasileiro);
-
-        System.out.printf("Valor em Peso chileno:          %,.4f%n",
-                value < pesoChileno ? value * pesoChileno : value / pesoChileno);
-
-        System.out.printf("Valor em Peso colombiano:       %,.4f%n",
-                value < pesoColombiano ? value * pesoColombiano : value / pesoColombiano);
-
-        System.out.printf("Valor em Dólar americano:       %,.4f%n",
-                value < dolarAmericano ? value * dolarAmericano : value / dolarAmericano);
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                        "Peso argentino:        %,.4f%n" +
-                        "Boliviano boliviano:   %,.4f%n" +
-                        /*"Real brasileiro:       %,.4f%n" +*/
-                        "Peso chileno:          %,.4f%n" +
-                        "Peso colombiano:       %,.4f%n" +
-                        "Dólar americano:       %,.4f%n",
-                pesoArgentino, bolivianoBoliviano, /*realBrasileiro,*/ pesoChileno, pesoColombiano, dolarAmericano);
-    }
+        @Override
+        public String toString() {
+                return String.format("Real brasileiro:       %,.4f%n" +
+                                "Peso argentino:        %,.4f%n" +
+                                "Boliviano boliviano:   %,.4f%n" +
+                                "Peso chileno:          %,.4f%n" +
+                                "Peso colombiano:       %,.4f%n" +
+                                "Dólar americano:       %,.4f%n",
+                                pesoArgentino, bolivianoBoliviano, realBrasileiro, pesoChileno, pesoColombiano,
+                                dolarAmericano);
+        }
 
 }
