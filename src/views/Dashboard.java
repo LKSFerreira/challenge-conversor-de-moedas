@@ -45,8 +45,6 @@ public class Dashboard {
 
             System.out.print("Digite o valor a ser convertido: ");
             var value = scanner.next();
-            System.out.println();
-
             try {
                 return Double.parseDouble(value);
             } catch (NumberFormatException e) {
@@ -64,6 +62,16 @@ public class Dashboard {
         MyConsole.printColor("5 - Peso Colombiano (COP)", MyConsole.CYAN);
         MyConsole.printColor("6 - Boliviano Boliviano (BOB)", MyConsole.RED);
         MyConsole.printColor("7 - Outra Moeda", MyConsole.ORANGE);
+    }
+
+    public static void exchangeOneToOne(Scanner scanner) {
+        // System.out.print("Digite o código da moeda de origem (Ex: 'BRL'): ");
+        // var moedaOrigem = scanner.next();
+
+        // var value = getValueToConvert(scanner);
+
+        // System.out.print("Digite o código da moeda de destino (Ex: 'USD'): ");
+        // var moedaDestino = scanner.next();
     }
 
 }

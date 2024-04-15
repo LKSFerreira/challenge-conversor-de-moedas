@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 import exceptions.ApiKeyNotFoundException;
@@ -25,8 +26,8 @@ public class App {
             while (true) {
                 exchangeRatesModel = Dashboard.selectExchangeRate(scanner);
 
-                if (exchangeRatesModel == null) {
-                    System.out.println("Escolheu a opcao 7");
+                if (Objects.isNull(exchangeRatesModel)) {
+                    Dashboard.exchangeOneToOne(scanner);
                 } else {
                     var value = Dashboard.getValueToConvert(scanner);
                     exchangeRatesModel.getExchangeRates(value);

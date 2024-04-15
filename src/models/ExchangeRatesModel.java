@@ -32,6 +32,7 @@ public class ExchangeRatesModel {
                 moedas.put("Peso colombiano", pesoColombiano);
 
                 int maiorNomeMoeda = moedas.keySet().stream().mapToInt(String::length).max().orElse(0);
+                System.out.println();
                 for (Map.Entry<String, Double> entry : moedas.entrySet()) {
                         String nomeMoeda = entry.getKey();
                         double taxaCambio = entry.getValue();
