@@ -13,7 +13,8 @@ public enum MyConsole {
     PURPLE("\u001B[35m"),
     CYAN("\u001B[36m"),
     WHITE("\u001B[37m"),
-    ORANGE("\u001B[38;5;208m");
+    ORANGE("\u001B[38;5;208m"),
+    BROWN("\u001B[38;5;130m");
 
     private final String escapeCode;
 

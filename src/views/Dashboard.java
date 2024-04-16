@@ -3,6 +3,7 @@ package views;
 import java.util.Map;
 import java.util.Scanner;
 
+import log.LogConversion;
 import models.ExchangeRatesModel;
 import services.ExchangeRateService;
 import utils.MyConsole;
@@ -26,6 +27,8 @@ public class Dashboard {
                         ExchangeRateService.getExchangeRateRecord(opcoesParaMoedas.get(opcao)));
             } else if ("7".equals(opcao)) {
                 return null;
+            } else if ("8".equals(opcao)) {
+                LogConversion.displayLogHistory();
             } else {
                 System.out.println("Opção inválida.\n");
             }
@@ -55,6 +58,7 @@ public class Dashboard {
         MyConsole.printColor("5 - Peso Colombiano (COP)", MyConsole.CYAN);
         MyConsole.printColor("6 - Boliviano Boliviano (BOB)", MyConsole.RED);
         MyConsole.printColor("7 - Outra Moeda", MyConsole.ORANGE);
+        MyConsole.printColor("8 - Exibir Logging", MyConsole.BROWN);
     }
 
     public static void exchangeOneToOne(Scanner scanner) {

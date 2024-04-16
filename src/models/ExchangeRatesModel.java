@@ -3,6 +3,8 @@ package models;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import log.LogConversion;
+
 public class ExchangeRatesModel {
         private double pesoArgentino;
         private double bolivianoBoliviano;
@@ -13,6 +15,8 @@ public class ExchangeRatesModel {
 
         private String baseCurrency;
         private String targetCurrency;
+
+        private static final LogConversion logService = new LogConversion();
 
         public ExchangeRatesModel(ExchangeRatesRecord exchangeRatesRecord) {
                 this.pesoArgentino = exchangeRatesRecord.ars();
@@ -33,9 +37,14 @@ public class ExchangeRatesModel {
                 validarTaxaDeCambio(exchangeRate);
 
                 double valorConvertido = calcularConversao(valueToConvert, exchangeRate);
+                String formattedMessage = String.format("Total de %.2f %s em %s ----> %.2f",
+                                valueToConvert,
+                                baseCurrency.toUpperCase(),
+                                targetCurrency.toUpperCase(),
+                                valorConvertido);
 
-                System.out.printf("\nTotal de %s em %s ----> %.4f\n\n", baseCurrency.toUpperCase(),
-                                targetCurrency.toUpperCase(), valorConvertido);
+                System.out.print("\n" + formattedMessage + "\n\n");
+                logService.logConversion(formattedMessage);
         }
 
         public void getExchangeRates(double valueToConvert) {
@@ -63,7 +72,9 @@ public class ExchangeRatesModel {
                         String tracos = "-".repeat(numTracos + 1);
 
                         // Formata e imprime a linha
-                        System.out.printf("%s %s> %,10.4f%n", nomeMoeda, tracos, valorConvertido);
+                        String formattedString = String.format("%s %s> %,.2f", nomeMoeda, tracos, valorConvertido);
+                        System.out.printf("%s\n", formattedString);
+                        logService.logConversion(formattedString);
                 }
 
                 System.out.println();
@@ -86,17 +97,17 @@ public class ExchangeRatesModel {
         }
 
         private double calcularConversao(double valor, double taxaDeCambio) {
-                return  valor * taxaDeCambio;
+                return valor * taxaDeCambio;
         }
 
         @Override
         public String toString() {
-                return String.format("Real brasileiro:       %,.4f%n" +
-                                "Peso argentino:        %,.4f%n" +
-                                "Boliviano boliviano:   %,.4f%n" +
-                                "Peso chileno:          %,.4f%n" +
-                                "Peso colombiano:       %,.4f%n" +
-                                "Dólar americano:       %,.4f%n",
+                return String.format("Real brasileiro:       %,.2f%n" +
+                                "Peso argentino:        %,.2f%n" +
+                                "Boliviano boliviano:   %,.2f%n" +
+                                "Peso chileno:          %,.2f%n" +
+                                "Peso colombiano:       %,.2f%n" +
+                                "Dólar americano:       %,.2f%n",
                                 pesoArgentino, bolivianoBoliviano, realBrasileiro, pesoChileno, pesoColombiano,
                                 dolarAmericano);
         }
