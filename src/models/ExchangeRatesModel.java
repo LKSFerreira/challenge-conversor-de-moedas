@@ -108,7 +108,7 @@ public class ExchangeRatesModel {
                                 "Peso chileno:          %,.2f%n" +
                                 "Peso colombiano:       %,.2f%n" +
                                 "Dólar americano:       %,.2f%n",
-                                pesoArgentino, bolivianoBoliviano, realBrasileiro, pesoChileno, pesoColombiano,
+                                realBrasileiro, pesoArgentino, bolivianoBoliviano, pesoChileno, pesoColombiano,
                                 dolarAmericano);
         }
 
